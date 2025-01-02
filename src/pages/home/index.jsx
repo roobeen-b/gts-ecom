@@ -1,13 +1,17 @@
 import ProductCard from "@/components/ProductCard";
 import ProductFilter from "@/components/ProductFilter";
 import { Button } from "@/components/ui/button";
+import { GlobalContext } from "@/context/GlobalContext";
 import { allProducts } from "@/data/products";
 import { LucideListFilter } from "lucide-react";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 const Home = () => {
   const [filters, setFilters] = useState([]);
   const [showMobileFilter, setShowMobileFilter] = useState(false);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+
+  const { searchQuery } = useContext(GlobalContext);
 
   function handleFilter(currentFilter) {
     if (filters && filters.includes(currentFilter)) {
@@ -17,6 +21,21 @@ const Home = () => {
       setFilters([...filters, currentFilter]);
     }
   }
+
+  useEffect(() => {
+    if (searchQuery === undefined || searchQuery === "") {
+      setFilteredProducts(allProducts);
+    } else if (searchQuery && searchQuery !== "") {
+      const filteredItems =
+        allProducts &&
+        allProducts.filter((item) =>
+          item.productName.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+
+      setFilteredProducts(filteredItems);
+    }
+  }, [searchQuery]);
+
   return (
     <div className="px-2 md:px-4 lg:px-6 py-4 grid grid-cols-1 md:grid-cols-[200px_1fr] min-h-screen">
       <div className="hidden md:block">
@@ -41,8 +60,8 @@ const Home = () => {
       <div className="flex flex-col px-2 md:px-4 lg:px-6">
         <h1 className="text-2xl font-bold">All Products</h1>
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-2">
-          {allProducts && allProducts.length > 0 ? (
-            allProducts
+          {filteredProducts && filteredProducts.length > 0 ? (
+            filteredProducts
               .filter((item) =>
                 filters.length > 0 ? filters.includes(item.category) : item
               )
