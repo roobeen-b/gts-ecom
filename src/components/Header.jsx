@@ -40,8 +40,13 @@ const Header = () => {
         <SearchBar />
       </div>
       <div className="flex items-center gap-2 md:gap-4">
-        <Button size="icon" variant="ghost" className="md:hidden">
-          <Search onClick={() => navigate("/search")} />
+        <Button
+          size="icon"
+          variant="ghost"
+          className="md:hidden"
+          onClick={() => navigate("/search")}
+        >
+          <Search />
         </Button>
         <Button
           className="relative"
